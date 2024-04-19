@@ -1,0 +1,51 @@
+version: '3.9'
+
+# Define network
+networks:
+  dotnetnextnetwork:
+    name: dotnetnextnetwork
+    driver: bridge
+
+# Define services
+services:
+  # Postgres database
+  pgdb:
+    image: postgres:15.6-alpine
+    container_name: pgstoredb_container
+    volumes:
+      - ./pgdatabase/data:/var/lib/postgresql/data
+      - ./pgdatabase/initdb:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_DB: storedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "6443:5432"
+    restart: always
+    networks:
+      - dotnetnextnetwork
+  # Dotnet API Backend
+  dotnetapi:
+    image: dotnetapi:1.0
+    container_name: dotnetapi_container
+    build: dotnetapi/
+    ports:
+      - "8081:8081"
+    depends_on:
+      - pgdb
+    restart: always
+    networks:
+      - dotnetnextnetwork
+  # NextJS Frontend
+  nextjsapp:
+    image: nextjsapp:1.0
+    container_name: nextjsapp_container
+    build: nextstoreapp/
+    ports:
+      - "8080:3000"
+    depends_on:
+      - dotnetapi
+    restart: always
+    networks:
+      - dotnetnextnetwork
+  

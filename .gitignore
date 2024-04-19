@@ -1,0 +1,6 @@
+pgdatabase/data
+nextstoreapp/.next
+nextstoreapp/node_modules
+dotnetapi/bin
+dotnetapi/obj
+dotnetapi/.vscode
