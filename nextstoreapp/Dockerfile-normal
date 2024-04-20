@@ -1,0 +1,9 @@
+# Normal
+FROM node:20.12.2-alpine as builder
+
+WORKDIR /app
+COPY . .
+
+RUN npm install
+RUN npm run build
+CMD ["npm", "run", "start"]
