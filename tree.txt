@@ -1,0 +1,25 @@
+DotnetNextDocker
+├── dotnetapi
+│   ├── Controller
+│   │   ├── Data
+│   │   ├── Migrations
+│   │   ├── Models
+│   │   ├── Properties
+│   │   ├── wwwroot
+│   │   ├── appsettings.json
+│   │   ├── dotnetapi.csproj
+│   │   ├── Program.cs
+│   │   ├── .dockerignore
+│   │   ├── Dockerfile
+├── nextstoreapp
+│   ├── public
+│   ├── src
+│   ├── .env.development
+│   ├── .env.production
+│   ├── .next.config.mjs
+│   ├── .dockerignore
+│   ├── Dockerfile
+├── pgdatabase
+│   ├── data
+│   ├── initdb
+├── docker-compose.yml

@@ -391,20 +391,14 @@ public class AuthenticateController : ControllerBase
     {
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
 
-        var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // Windows time zone ID
-
-        // Get the current time in Bangkok time zone
-        var currentTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timeZoneInfo);
-
-        var token = new JwtSecurityToken(
+         var token = new JwtSecurityToken(
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
-            expires: currentTime.AddHours(24), // 24 hours
+            expires: DateTime.Now.AddHours(24), // 24 hours
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
-
-        return token;
+        return token; 
     }
 
     public class RefreshTokenModel
