@@ -28,6 +28,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
+
 // Adding Jwt Bearer
 .AddJwtBearer(options =>
 {
@@ -43,10 +44,39 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// CORS with default policy
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddDefaultPolicy(
+            policy =>
+            {
+                policy.AllowAnyOrigin();
+                policy.AllowAnyMethod();
+                policy.AllowAnyHeader();
+            }
+        );
+    }
+);
+
+// Cors Allow Specific
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AllowSpecificOrigin",
+//         builder =>
+//         {
+//             builder.WithOrigins("http://localhost:3000", "http://localhost:4200");
+//             builder.WithHeaders("Authorization", "Content-Type", "Accept", "Origin", "X-Request-With");
+//             builder.WithMethods("GET", "POST", "PUT", "DELETE");
+//         }
+//     );
+// });
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opt => 
+builder.Services.AddSwaggerGen(opt =>
     {
         opt.SwaggerDoc(
             "v1",
@@ -88,7 +118,7 @@ builder.Services.AddSwaggerGen(opt =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || true)
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction()) // Adjust according to your needs
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -97,24 +127,14 @@ if (app.Environment.IsDevelopment() || true)
 // Use Static Files
 app.UseStaticFiles();
 
+
 // Redirect HTTP to HTTPS
-app.UseHttpsRedirection();
-
-// Cors Allow All
-app.UseCors(options =>
+if (!app.Environment.IsDevelopment())
 {
-    options.AllowAnyOrigin();
-    options.AllowAnyHeader();
-    options.AllowAnyMethod();
-});
+    app.UseHttpsRedirection();  // Only use HTTPS redirection in non-development environments
+}
 
-// Cors Allow Specific
-// app.UseCors(options => 
-// {
-//     options.WithOrigins("http://localhost:3000");
-//     options.WithHeaders("Authorization");
-//     options.WithMethods("GET", "POST", "PUT", "DELETE");
-// });
+app.UseCors();
 
 // Add Authentication
 app.UseAuthentication();
